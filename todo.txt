@@ -1,0 +1,14 @@
+features:
+-login/sign up
+-create room
+-join room
+
+
+to do:
+-time for each msg sent
+-add files in msgs
+-change all front end
+
+requirement:
+channel(3.05)
+uuid
