@@ -16,7 +16,7 @@
             </b>
             {{ m.content }}
             <br>
-            {{ m.date_added|date:"H:i:s" }}
+            {{ m.date_added|date:"H:i:s, j F Y" }}
             <br>
         {% endfor %}
     </div>
@@ -57,8 +57,12 @@
 
 
         if (data.message) {
-            const formattedTime = new Date().toLocaleTimeString();
-            document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + ':</b> ' + data.message + '<br>' + formattedTime + '<br>' );
+            const currentDate = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = currentDate.toLocaleDateString(undefined, options);
+            const formattedTime = currentDate.toLocaleTimeString();
+
+            document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + ':</b> ' + data.message + '<br>' + formattedTime + ', ' + formattedDate + '<br>' );
         } else {
             alert('The message was empty!')
         }

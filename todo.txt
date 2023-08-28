@@ -7,7 +7,9 @@ features:
 to do:
 after each change push github
 
--time for each msg sent
+-time for each msg sent -- DONE
+-fix local time of django, it shows 2 hours behind -- DONE
+-fix the disconnect error -- DONE
 -add files in msgs
 
 -change all front end
