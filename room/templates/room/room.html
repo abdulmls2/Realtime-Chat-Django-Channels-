@@ -12,9 +12,11 @@
     <div class="chat-messages space-y-3" id="chat-messages">
         {% for m in messages %}
             <b>
-            {{ m.user.username }}
-            </b>:
+            {{ m.user.username }}:
+            </b>
             {{ m.content }}
+            <br>
+            {{ m.date_added|date:"H:i:s" }}
             <br>
         {% endfor %}
     </div>
@@ -53,8 +55,10 @@
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
 
+
         if (data.message) {
-           document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
+            const formattedTime = new Date().toLocaleTimeString();
+            document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + ':</b> ' + data.message + '<br>' + formattedTime + '<br>' );
         } else {
             alert('The message was empty!')
         }

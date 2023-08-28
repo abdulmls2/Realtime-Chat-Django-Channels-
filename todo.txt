@@ -5,9 +5,13 @@ features:
 
 
 to do:
+after each change push github
+
 -time for each msg sent
 -add files in msgs
+
 -change all front end
+-after everything done push github and create a read me, requirement
 
 requirement:
 channel(3.05)
