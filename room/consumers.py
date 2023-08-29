@@ -7,6 +7,8 @@ from asgiref.sync import sync_to_async
 from .models import Room, Message
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    online_users = {}  # Dictionary to store online users
+
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
@@ -17,14 +19,75 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+        print('user logged in')
+        await self.add_user_to_room()
 
-    async def disconnect(self,code):
+    async def disconnect(self, code):
+        print('user offline')
+        await self.remove_user_from_room()
+
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
 
-    # Receive message from WebSocket
+    async def add_user_to_room(self):
+        user = self.scope['user']
+        room = await self.get_room_object()
+        await self.add_user_to_online_participants(room, user)
+
+        await self.send_updated_participants_list()
+
+    async def remove_user_from_room(self):
+        user = self.scope['user']
+        room = await self.get_room_object()
+        await self.remove_user_from_online_participants(room, user)
+
+        await self.send_updated_participants_list()
+
+    async def send_updated_participants_list(self):
+        room = await self.get_room_object()
+        online_participants = await self.get_online_participants(room)
+
+        print(f"Online users in room '{room.name}': {', '.join(online_participants)}")
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'online_users',
+                'online_users': online_participants
+            }
+        )
+
+    @sync_to_async
+    def get_room_object(self):
+        return Room.objects.get(slug=self.room_name)
+
+    @sync_to_async
+    def add_user_to_online_participants(self, room, user):
+        room.online_participants.add(user)
+
+    @sync_to_async
+    def remove_user_from_online_participants(self, room, user):
+        room.online_participants.remove(user)
+
+    @sync_to_async
+    def get_online_participants(self, room):
+        return list(room.online_participants.values_list('username', flat=True))
+
+    async def user_status(self, event):
+        await self.send(text_data=json.dumps({
+            'username': event['username'],
+            'status': event['status']
+        }))
+
+    async def online_users(self, event):
+        online_users = event['online_users']
+
+        await self.send(text_data=json.dumps({
+            'online_users': online_users
+        }))
+
     async def receive(self, text_data):
         data = json.loads(text_data)
         print(data)
@@ -34,7 +97,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.save_message(username, room, message)
 
-        # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -44,12 +106,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
 
-        # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username

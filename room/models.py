@@ -6,6 +6,7 @@ class Room(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     participants = models.ManyToManyField(User, related_name='joined_rooms')
+    online_participants = models.ManyToManyField(User, related_name='online_rooms', blank=True)
 
     def __str__(self):
         return self.name

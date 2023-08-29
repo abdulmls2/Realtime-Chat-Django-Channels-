@@ -11,8 +11,12 @@ after each change push github
 -fix local time of django, it shows 2 hours behind -- DONE
 -fix the disconnect error -- DONE
 -add files in msgs
+-if user go on a incorect url or enter wrong code ext , error check
 
 -change all front end
+
+-clean code
+-add comments
 -after everything done push github and create a read me, requirement
 
 requirement:
