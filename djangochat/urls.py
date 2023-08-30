@@ -6,3 +6,5 @@ urlpatterns = [
     path('rooms/', include('room.urls')),
     path('admin/', admin.site.urls),
 ]
+
+handler404 = 'core.views.custom_404'

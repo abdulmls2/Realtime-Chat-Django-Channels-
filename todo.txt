@@ -11,8 +11,10 @@ after each change push github
 -time for each msg sent -- DONE
 -fix local time of django, it shows 2 hours behind -- DONE
 -fix the disconnect error -- DONE
--add files in msgs
--if user go on a incorect url or enter wrong code ext , error check
+-delete group, owner of group -- DONE
+-error handling -- DONE
+
+-forgot password
 
 -change all front end
 

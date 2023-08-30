@@ -20,3 +20,7 @@ def signup(request):
         form = SignUpForm()
     
     return render(request, 'core/signup.html', {'form': form})
+
+
+def custom_404(request, exception, template_name='core/404.html'):
+    return render(request, template_name)
