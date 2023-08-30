@@ -48,14 +48,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def send_updated_participants_list(self):
         room = await self.get_room_object()
         online_participants = await self.get_online_participants(room)
+        total_online_users = len(online_participants)
 
         print(f"Online users in room '{room.name}': {', '.join(online_participants)}")
+        print(total_online_users)
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'online_users',
-                'online_users': online_participants
+                'online_users': online_participants,
+                'total_online_users': total_online_users,
             }
         )
 
@@ -83,9 +86,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def online_users(self, event):
         online_users = event['online_users']
+        total_online_users = event['total_online_users']
 
         await self.send(text_data=json.dumps({
-            'online_users': online_users
+            'online_users': online_users,
+            'total_online_users': total_online_users,
         }))
 
     async def receive(self, text_data):

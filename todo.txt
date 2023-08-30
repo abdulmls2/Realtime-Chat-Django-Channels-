@@ -2,6 +2,7 @@ features:
 -login/sign up
 -create room
 -join room
+-user is online/offline
 
 
 to do:
