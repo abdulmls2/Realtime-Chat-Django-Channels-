@@ -14,8 +14,6 @@ after each change push github
 -delete group, owner of group -- DONE
 -error handling -- DONE
 
--forgot password
-
 -change all front end
 
 -clean code
@@ -25,3 +23,5 @@ after each change push github
 requirement:
 channel(3.05)
 uuid
+
+test
