@@ -24,4 +24,3 @@ requirement:
 channel(3.05)
 uuid
 
-test
