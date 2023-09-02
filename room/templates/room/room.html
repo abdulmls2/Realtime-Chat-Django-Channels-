@@ -56,13 +56,15 @@
 </div>
 
 {% endblock %}
-
 {% block scripts %}
 {{ room.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
 <script>
+    // Parse the JSON data
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
+
+    // Create a WebSocket connection to the chat room
     const chatSocket = new WebSocket(
         'ws://' +
         window.location.host +
@@ -71,18 +73,24 @@
         '/'
     );
 
+    // Handle WebSocket connection close event
     chatSocket.onclose = function(e) {
-        console.log('onclose')
+        console.log('WebSocket connection closed');
     }
 
+    // Handle incoming WebSocket messages
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
 
         if (data.online_users) {
+            // Update the list of online users
             updateOnlineUsers(data.online_users);
+
+            // Update the total online users count
             const totalOnlineUsersElement = document.querySelector('#total-online-users');
             totalOnlineUsersElement.innerHTML = `Online users: ${data.total_online_users}`;
         } else if (data.message) {
+            // Format and display incoming chat messages
             const currentDate = new Date();
             const options = {
                 year: 'numeric',
@@ -94,39 +102,46 @@
 
             document.querySelector('#chat-messages').innerHTML += ('<b>' + data.username + ':</b> ' + data.message + '<br>' + formattedTime + ', ' + formattedDate + '<br>');
         } else {
-            alert('The message was empty!')
+            console.log('Empty Message');
         }
+
+        // Scroll to the bottom of the chat messages
         scrollToBottom();
     };
 
+    // Handle the click event for sending chat messages
     document.querySelector('#chat-message-submit').onclick = function(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         const messageInputDom = document.querySelector('#chat-message-input');
         const message = messageInputDom.value;
 
+        // Send the chat message to the server
         chatSocket.send(JSON.stringify({
             'message': message,
             'username': userName,
             'room': roomName,
         }));
 
+        // Clear the message input field
         messageInputDom.value = '';
 
-        return false
+        return false;
     };
 
+    // Function to scroll to the bottom of the chat messages
     function scrollToBottom() {
         let objDiv = document.getElementById("chat-messages");
         objDiv.scrollTop = objDiv.scrollHeight;
     }
 
+    // Function to update the list of online users
     function updateOnlineUsers(onlineUsers) {
         const onlineUsersList = document.querySelector('#online-users');
         onlineUsersList.innerHTML = onlineUsers.map(user => `<li>${user}</li>`).join('');
     }
 
-    // Add this below the function to trigger the scroll on load.
+    // Trigger the scroll to the bottom on page load
     scrollToBottom();
 
 </script>

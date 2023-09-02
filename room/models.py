@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
     participants = models.ManyToManyField(User, related_name='joined_rooms')
     online_participants = models.ManyToManyField(User, related_name='online_rooms', blank=True)
@@ -18,9 +18,6 @@ class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.content[0:25]
 
     class Meta:
         ordering = ('date_added',)

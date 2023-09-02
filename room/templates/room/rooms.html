@@ -3,45 +3,27 @@
 {% block title %}Rooms | {% endblock %}
 
 {% block content %}
+<div class="p-10 lg:p-20 text-center">
+    <br>
 
-<style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
+    <form method="POST" action="{% url 'user_rooms' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="join">
+        <input type="text" name="room_slug" id="room_slug" placeholder="Enter Room ID">
+        <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Join Room</button>
+    </form>
 
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
-    }
+    <br>
 
-</style>
-            <div class="p-10 lg:p-20 text-center">
-                <br>
+    <form method="POST" action="{% url 'user_rooms' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+        <input type="text" name="room_name" id="room_name" placeholder="Enter Room name">
+        <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Create Room</button>
+    </form>
+</div>
 
-                <form method="POST" action="{% url 'user_rooms' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="join">
-                    <input type="text" name="room_slug" id="room_slug" placeholder="Enter Room ID">
-                    <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Join Room</button>
-                </form>
-
-                <br>
-
-                <form method="POST" action="{% url 'user_rooms' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="create">
-                    <input type="text" name="room_name" id="room_name" placeholder="Enter Room name">
-                    <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Create Room</button>
-                </form>
-            </div>
-
-          <div class="album">
+<div class="album">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {% for room in user_rooms %}
@@ -49,7 +31,7 @@
                 <div class="h-40">
                     <svg class="w-full h-full text-black" xmlns="http://www.w3.org/2000/svg" fill="none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 100 100">
                         <rect width="100%" height="100%" fill="#3b608c"></rect>
-                        <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" dy=".3em"  style="font-size:8px;">
+                        <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" dy=".3em" style="font-size:8px;">
                             {{ room.name }}
                         </text>
                     </svg>
