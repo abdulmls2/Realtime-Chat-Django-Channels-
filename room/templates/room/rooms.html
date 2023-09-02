@@ -3,40 +3,74 @@
 {% block title %}Rooms | {% endblock %}
 
 {% block content %}
-<div class="p-10 lg:p-20 text-center">
-    <h1 class="text-3xl lg:text-6xl text-white">Rooms</h1>
 
-    <form method="POST" action="{% url 'user_rooms' %}">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="join">
-        <label>Room ID</label>
-        <input type="text" name="room_slug" id="room_slug">
-        <button type="submit">Join Room</button>
-    </form>
+<style>
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 
-    <br>
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
 
-    <form method="POST" action="{% url 'user_rooms' %}">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="create">
-        <label>Room Name</label>
-        <input type="text" name="room_name" id="room_name">
-        <button type="submit">Create Room</button>
-    </form>
+</style>
+            <div class="p-10 lg:p-20 text-center">
+                <br>
 
+                <form method="POST" action="{% url 'user_rooms' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="join">
+                    <input type="text" name="room_slug" id="room_slug" placeholder="Enter Room ID">
+                    <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Join Room</button>
+                </form>
 
-</div>
+                <br>
 
-
-<div class="w-full flex flex-wrap items-center">
-    {% for room in user_rooms %}
-        <div class="w-full lg:w-1/4 px-3 py-3">
-            <div class="p-4 bg-white shadow rounded-xl text-center">
-                <h2 class="mb-5 text-2xl font-semibold">{{ room.name }}</h2>
-
-                <a href="{% url 'room' room.slug %}" class="px-5 py-3 block rounded-xl text-white bg-teal-600 hover:bg-teal-700">Chat</a>
+                <form method="POST" action="{% url 'user_rooms' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="create">
+                    <input type="text" name="room_name" id="room_name" placeholder="Enter Room name">
+                    <button type="submit" class="px-2 py-1 rounded-xl text-black bg-zinc-100 hover:bg-stone-200">Create Room</button>
+                </form>
             </div>
+
+          <div class="album">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% for room in user_rooms %}
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="h-40">
+                    <svg class="w-full h-full text-black" xmlns="http://www.w3.org/2000/svg" fill="none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 100 100">
+                        <rect width="100%" height="100%" fill="#3b608c"></rect>
+                        <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" dy=".3em"  style="font-size:8px;">
+                            {{ room.name }}
+                        </text>
+                    </svg>
+                </div>
+                <div class="p-4">
+                    <p class="text-gray-700">
+                        Group Created by: <strong>{{ room.owner }}</strong>
+                    </p>
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="btn-group">
+                            <a href="{% url 'room' room.slug %}" class="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded">
+                                Chat
+                            </a>
+                        </div>
+                        <small class="text-gray-600 text-sm"><strong>Members: {{ room.participants.count }}</strong></small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 </div>
+
 {% endblock %}

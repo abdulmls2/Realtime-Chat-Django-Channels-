@@ -24,6 +24,7 @@ def user_rooms(request):
             if not Room.objects.filter(slug=slug).exists():
                 new_room = Room.objects.create(name=room_name, slug=slug, owner=request.user)
                 new_room.participants.add(request.user)
+                return redirect('user_rooms')
 
     user_rooms = Room.objects.filter(participants=request.user)
     return render(request, 'room/rooms.html', {'user_rooms': user_rooms})
@@ -48,6 +49,6 @@ def room(request, slug):
 def delete_room(request, slug):
     room = Room.objects.get(slug=slug)
     room.delete()
-    return redirect('/')
+    return redirect('user_rooms')
 
 
